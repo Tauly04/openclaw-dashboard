@@ -1,47 +1,81 @@
 """
-Chat API - WebSocket chat with OpenClaw Agent
+Chat API - WebSocket and REST chat with persistent storage
 """
-from fastapi import APIRouter, WebSocket, WebSocketDisconnect, Depends
+from fastapi import APIRouter, WebSocket, WebSocketDisconnect, Depends, HTTPException
+from sqlalchemy.orm import Session
 from typing import Dict, List
 import json
 import asyncio
 from datetime import datetime
+import uuid
+
+from database import get_db, ChatMessage, UserSettings
+from services.auth import AuthService
 
 router = APIRouter()
 
-# Store active chat connections
+# Store active WebSocket connections
 active_chats: Dict[str, WebSocket] = {}
-
-# Chat message history (in-memory, per session)
-chat_history: Dict[str, List[dict]] = {}
 
 
 @router.websocket("/chat")
-async def chat_websocket(websocket: WebSocket):
+async def chat_websocket(websocket: WebSocket, db: Session = Depends(get_db)):
     """
-    WebSocket endpoint for real-time chat with OpenClaw Agent.
-    
-    Message format:
-    {
-        "type": "message" | "typing" | "status",
-        "content": "user message",
-        "timestamp": "ISO datetime"
-    }
+    WebSocket endpoint for real-time chat with persistent storage.
     """
     await websocket.accept()
     
+    # Get token from query params
+    token = websocket.query_params.get("token")
+    auth_service = AuthService()
+    
+    if not token:
+        await websocket.send_json({
+            "type": "error",
+            "content": "Authentication required"
+        })
+        await websocket.close(code=1008)
+        return
+    
+    # Verify token and get user
+    try:
+        payload = auth_service.verify_token(token)
+        user_id = payload.get("sub")
+        if not user_id:
+            raise ValueError("Invalid token")
+        user_id = int(user_id)
+    except Exception as e:
+        await websocket.send_json({
+            "type": "error",
+            "content": "Invalid token"
+        })
+        await websocket.close(code=1008)
+        return
+    
     # Generate session ID
-    session_id = str(id(websocket))
+    session_id = str(uuid.uuid4())
     active_chats[session_id] = websocket
-    chat_history[session_id] = []
     
     try:
         # Send welcome message
         await websocket.send_json({
             "type": "system",
             "content": "你好！我是 OpenClaw 助手，有什么可以帮你的吗？",
-            "timestamp": datetime.now().isoformat()
+            "timestamp": datetime.utcnow().isoformat()
         })
+        
+        # Send chat history
+        history = db.query(ChatMessage).filter(
+            ChatMessage.user_id == user_id
+        ).order_by(ChatMessage.created_at.asc()).limit(50).all()
+        
+        for msg in history:
+            await websocket.send_json({
+                "type": "history",
+                "role": msg.role,
+                "content": msg.content,
+                "timestamp": msg.created_at.isoformat()
+            })
         
         while True:
             # Receive message from client
@@ -49,71 +83,70 @@ async def chat_websocket(websocket: WebSocket):
             message = json.loads(data)
             
             if message.get("type") == "message":
-                user_content = message.get("content", "")
+                user_content = message.get("content", "").strip()
+                if not user_content:
+                    continue
                 
-                # Store user message
-                chat_history[session_id].append({
-                    "role": "user",
-                    "content": user_content,
-                    "timestamp": datetime.now().isoformat()
-                })
+                # Save user message to database
+                db_message = ChatMessage(
+                    user_id=user_id,
+                    role="user",
+                    content=user_content,
+                    session_id=session_id
+                )
+                db.add(db_message)
+                db.commit()
                 
                 # Send typing indicator
                 await websocket.send_json({
                     "type": "typing",
                     "content": "thinking...",
-                    "timestamp": datetime.now().isoformat()
+                    "timestamp": datetime.utcnow().isoformat()
                 })
                 
-                # Simulate processing delay (will be replaced with actual OpenClaw integration)
-                await asyncio.sleep(1)
+                # Generate response
+                response = await generate_openclaw_response(user_content, user_id, db)
                 
-                # Generate response (placeholder - will integrate with OpenClaw)
-                response = await generate_openclaw_response(user_content, session_id)
-                
-                # Store assistant response
-                chat_history[session_id].append({
-                    "role": "assistant",
-                    "content": response,
-                    "timestamp": datetime.now().isoformat()
-                }
+                # Save assistant response to database
+                assistant_message = ChatMessage(
+                    user_id=user_id,
+                    role="assistant",
+                    content=response,
+                    session_id=session_id
                 )
+                db.add(assistant_message)
+                db.commit()
                 
                 # Send response
                 await websocket.send_json({
                     "type": "message",
                     "role": "assistant",
                     "content": response,
-                    "timestamp": datetime.now().isoformat()
+                    "timestamp": datetime.utcnow().isoformat()
                 })
                 
     except WebSocketDisconnect:
-        # Clean up on disconnect
-        if session_id in active_chats:
-            del active_chats[session_id]
-        if session_id in chat_history:
-            del chat_history[session_id]
+        pass
     except Exception as e:
+        print(f"Chat WebSocket error: {e}")
         try:
             await websocket.send_json({
                 "type": "error",
-                "content": f"Error: {str(e)}",
-                "timestamp": datetime.now().isoformat()
+                "content": f"Error: {str(e)}"
             })
+        except:
+            pass
+    finally:
+        if session_id in active_chats:
+            del active_chats[session_id]
+        try:
             await websocket.close()
         except:
             pass
-        finally:
-            if session_id in active_chats:
-                del active_chats[session_id]
 
 
-async def generate_openclaw_response(user_message: str, session_id: str) -> str:
-    """
-    Generate response from OpenClaw Agent.
-    This is a placeholder - will be integrated with actual OpenClaw main agent.
-    """
-    # Simple keyword-based responses for now
+async def generate_openclaw_response(user_message: str, user_id: int, db: Session) -> str:
+    """Generate response from OpenClaw Agent."""
     msg_lower = user_message.lower()
     
     if "gateway" in msg_lower or "状态" in msg_lower:
@@ -138,10 +171,98 @@ async def generate_openclaw_response(user_message: str, session_id: str) -> str:
     return f"我收到了你的消息：\"{user_message}\"\n\n目前我还在学习中，暂时只能回答一些预设问题。请使用 Dashboard 的功能来完成具体操作。"
 
 
-@router.get("/chat/history/{session_id}")
-async def get_chat_history(session_id: str):
-    """Get chat history for a session"""
+# REST API endpoints
+@router.get("/chat/history")
+async def get_chat_history(
+    limit: int = 50,
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(AuthService().get_current_user)
+):
+    """Get chat history for the current user"""
+    user_id = current_user.get("id")
+    
+    messages = db.query(ChatMessage).filter(
+        ChatMessage.user_id == user_id
+    ).order_by(ChatMessage.created_at.desc()).limit(limit).all()
+    
     return {
-        "session_id": session_id,
-        "messages": chat_history.get(session_id, [])
+        "messages": [
+            {
+                "id": msg.id,
+                "role": msg.role,
+                "content": msg.content,
+                "timestamp": msg.created_at.isoformat()
+            }
+            for msg in reversed(messages)
+        ]
+    }
+
+
+@router.delete("/chat/history")
+async def clear_chat_history(
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(AuthService().get_current_user)
+):
+    """Clear chat history for the current user"""
+    user_id = current_user.get("id")
+    
+    db.query(ChatMessage).filter(ChatMessage.user_id == user_id).delete()
+    db.commit()
+    
+    return {"message": "Chat history cleared"}
+
+
+# User settings endpoints
+@router.get("/settings")
+async def get_user_settings(
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(AuthService().get_current_user)
+):
+    """Get user settings"""
+    user_id = current_user.get("id")
+    
+    settings = db.query(UserSettings).filter(UserSettings.user_id == user_id).first()
+    
+    if not settings:
+        # Create default settings
+        settings = UserSettings(user_id=user_id)
+        db.add(settings)
+        db.commit()
+        db.refresh(settings)
+    
+    return {
+        "language": settings.language,
+        "bg_image": settings.bg_image,
+        "updated_at": settings.updated_at.isoformat() if settings.updated_at else None
+    }
+
+
+@router.put("/settings")
+async def update_user_settings(
+    language: str = None,
+    bg_image: str = None,
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(AuthService().get_current_user)
+):
+    """Update user settings"""
+    user_id = current_user.get("id")
+    
+    settings = db.query(UserSettings).filter(UserSettings.user_id == user_id).first()
+    
+    if not settings:
+        settings = UserSettings(user_id=user_id)
+        db.add(settings)
+    
+    if language:
+        settings.language = language
+    if bg_image is not None:  # Allow empty string to clear
+        settings.bg_image = bg_image
+    
+    db.commit()
+    db.refresh(settings)
+    
+    return {
+        "language": settings.language,
+        "bg_image": settings.bg_image,
+        "updated_at": settings.updated_at.isoformat() if settings.updated_at else None
     }

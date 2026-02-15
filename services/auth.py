@@ -7,12 +7,16 @@ from jose import jwt, JWTError
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Optional, Dict, Any
+from fastapi import Depends, HTTPException, status
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
 from config import (
     JWT_SECRET, JWT_ALGORITHM, JWT_EXPIRE_MINUTES,
     PASSWORDS_FILE, DEFAULT_ADMIN, OPENCLAW_DIR
 )
 from models import UserCreate, UserResponse
+
+security = HTTPBearer()
 
 
 class AuthService:
@@ -89,6 +93,29 @@ class AuthService:
             return payload.get("sub")
         except JWTError:
             return None
+
+    async def get_current_user(self, credentials: HTTPAuthorizationCredentials = Depends(security)) -> Dict[str, Any]:
+        """Get current user from JWT token (FastAPI dependency)"""
+        token = credentials.credentials
+        username = self.verify_token(token)
+        
+        if not username:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Invalid authentication credentials",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+        
+        # Load user data
+        users = self._load_users()
+        if username not in users:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="User not found",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+        
+        return {"username": username, "id": username}
 
     def change_password(self, username: str, old_password: str, new_password: str) -> bool:
         """Change a user's password"""

@@ -30,6 +30,10 @@ async def lifespan(app: FastAPI):
     """Application lifespan events"""
     # Startup
     print(f"OpenClaw Dashboard starting on {SERVER_HOST}:{SERVER_PORT}")
+    # Initialize database
+    from database import init_db
+    init_db()
+    print("Database initialized")
     yield
     # Shutdown
     print("OpenClaw Dashboard shutting down")
