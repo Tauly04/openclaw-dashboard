@@ -16,9 +16,14 @@ DATABASE_URL = os.environ.get('DATABASE_URL')
 if DATABASE_URL and DATABASE_URL.startswith('postgres://'):
     DATABASE_URL = DATABASE_URL.replace('postgres://', 'postgresql://', 1)
 
-# Default to SQLite for local development
+# Default to SQLite for local development or when no DATABASE_URL
+# Use /data directory for persistent storage in cloud deployments
 if not DATABASE_URL:
-    DATABASE_URL = "sqlite:///./openclaw_dashboard.db"
+    # Check if /data exists (for persistent volumes)
+    if os.path.exists('/data'):
+        DATABASE_URL = "sqlite:////data/openclaw_dashboard.db"
+    else:
+        DATABASE_URL = "sqlite:///./openclaw_dashboard.db"
 
 # Create engine
 engine = create_engine(
