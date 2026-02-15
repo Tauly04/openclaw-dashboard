@@ -12,6 +12,18 @@ const routes = [
     name: 'Dashboard',
     component: () => import('../views/Dashboard.vue'),
     meta: { requiresAuth: true }
+  },
+  {
+    path: '/features',
+    name: 'FeatureShowcase',
+    component: () => import('../views/FeatureShowcase.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/settings/features',
+    name: 'FeatureTreeManager',
+    component: () => import('../views/FeatureTreeManager.vue'),
+    meta: { requiresAuth: true, requiresAdmin: true }
   }
 ]
 

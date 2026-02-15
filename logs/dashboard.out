@@ -1,0 +1,41 @@
+OpenClaw Dashboard starting on 0.0.0.0:18790
+Database initialized
+INFO:     127.0.0.1:53700 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53702 - "GET / HTTP/1.1" 200 OK
+INFO:     141.11.133.37:0 - "GET / HTTP/1.1" 200 OK
+INFO:     141.11.133.37:0 - "GET /assets/index-M2CnrWFB.css HTTP/1.1" 200 OK
+INFO:     141.11.133.37:0 - "GET /assets/index-JyuHPYPn.js HTTP/1.1" 200 OK
+INFO:     141.11.133.37:0 - "GET /favicon.svg HTTP/1.1" 404 Not Found
+INFO:     141.11.133.37:0 - "GET /api/dashboard?light=1 HTTP/1.1" 401 Unauthorized
+INFO:     141.11.133.37:0 - "GET /assets/Login-CVSKi2LK.js HTTP/1.1" 200 OK
+INFO:     141.11.133.37:0 - "GET /api/status/?light=1 HTTP/1.1" 401 Unauthorized
+INFO:     141.11.133.37:0 - "GET /api/dashboard HTTP/1.1" 401 Unauthorized
+INFO:     141.11.133.37:0 - "GET /api/status/ HTTP/1.1" 401 Unauthorized
+INFO:     141.11.133.37:0 - "GET /api/dashboard?light=1 HTTP/1.1" 401 Unauthorized
+INFO:     141.11.133.37:0 - "GET /api/status/?light=1 HTTP/1.1" 401 Unauthorized
+INFO:     141.11.133.37:0 - "GET /api/dashboard HTTP/1.1" 401 Unauthorized
+INFO:     141.11.133.37:0 - "GET /api/status/ HTTP/1.1" 401 Unauthorized
+INFO:     141.11.133.37:0 - "GET /login HTTP/1.1" 404 Not Found
+INFO:     141.11.133.37:0 - "GET /favicon.ico HTTP/1.1" 404 Not Found
+INFO:     141.11.133.37:0 - "GET /api/dashboard?light=1 HTTP/1.1" 401 Unauthorized
+INFO:     141.11.133.37:0 - "GET /api/dashboard HTTP/1.1" 401 Unauthorized
+INFO:     141.11.133.37:0 - "GET /api/status/?light=1 HTTP/1.1" 401 Unauthorized
+INFO:     141.11.133.37:0 - "GET /api/status/ HTTP/1.1" 401 Unauthorized
+INFO:     141.11.133.37:0 - "GET /login HTTP/1.1" 404 Not Found
+INFO:     141.11.133.37:0 - "GET /login HTTP/1.1" 404 Not Found
+INFO:     141.11.133.37:0 - "GET /api/dashboard?light=1 HTTP/1.1" 401 Unauthorized
+INFO:     141.11.133.37:0 - "GET /api/dashboard HTTP/1.1" 401 Unauthorized
+INFO:     141.11.133.37:0 - "GET /api/status/?light=1 HTTP/1.1" 401 Unauthorized
+INFO:     141.11.133.37:0 - "GET /api/status/ HTTP/1.1" 401 Unauthorized
+INFO:     141.11.133.37:0 - "POST /api/auth/login HTTP/1.1" 200 OK
+INFO:     141.11.133.37:0 - "GET /assets/Dashboard-D95Yotmo.js HTTP/1.1" 200 OK
+INFO:     141.11.133.37:0 - "GET /assets/Dashboard-Bmx_zLof.css HTTP/1.1" 200 OK
+INFO:     141.11.133.37:0 - "GET /api/dashboard?light=1 HTTP/1.1" 200 OK
+INFO:     141.11.133.37:0 - "GET /api/dashboard HTTP/1.1" 200 OK
+INFO:     141.11.133.37:0 - "GET /api/dashboard?light=1 HTTP/1.1" 200 OK
+INFO:     141.11.133.37:0 - "GET /api/dashboard?light=1 HTTP/1.1" 200 OK
+INFO:     141.11.133.37:0 - "GET /api/dashboard?light=1 HTTP/1.1" 200 OK
+INFO:     141.11.133.37:0 - "GET /api/dashboard?light=1 HTTP/1.1" 200 OK
+INFO:     141.11.133.37:0 - "GET /api/dashboard HTTP/1.1" 200 OK
+INFO:     141.11.133.37:0 - "GET /api/dashboard?light=1 HTTP/1.1" 200 OK
+INFO:     141.11.133.37:0 - "GET /api/dashboard?light=1 HTTP/1.1" 200 OK
