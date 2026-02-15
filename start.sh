@@ -1,43 +1,36 @@
 #!/bin/bash
-# OpenClaw Dashboard Startup Script
+# Start OpenClaw Dashboard with persistent tunnel
 
-# Get the directory where this script is located
-SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+cd "$(dirname "$0")"
 
-# Find Python interpreter (prefer local venv)
-if [ -f "$SCRIPT_DIR/.venv/bin/python" ]; then
-    PYTHON="$SCRIPT_DIR/.venv/bin/python"
-elif [ -f "/opt/homebrew/bin/python3" ]; then
-    PYTHON="/opt/homebrew/bin/python3"
-elif [ -f "/usr/bin/python3" ]; then
-    PYTHON="/usr/bin/python3"
-else
-    echo "Error: Python 3 not found"
-    exit 1
-fi
+# Activate virtual environment
+source .venv/bin/activate
 
-cd "$SCRIPT_DIR"
+# Kill existing processes
+pkill -f "python server.py" 2>/dev/null
+pkill -f "cloudflared tunnel" 2>/dev/null
 
-# Load env overrides if present
-if [ -f ".env" ]; then
-  set -a
-  source ".env"
-  set +a
-fi
+sleep 2
 
-export MINIMAX_API_KEY="${MINIMAX_API_KEY}"
-export MINIMAX_GROUP_ID="${MINIMAX_GROUP_ID}"
-export MINIMAX_QUOTA_URL="${MINIMAX_QUOTA_URL:-https://www.minimaxi.com/v1/api/openplatform/coding_plan/remains?GroupId=${MINIMAX_GROUP_ID}}"
+# Start the server
+echo "🚀 Starting OpenClaw Dashboard..."
+python server.py &
+SERVER_PID=$!
 
-SERVER_PORT="${SERVER_PORT:-18790}"
-echo "Starting OpenClaw Dashboard..."
-echo "Access at: http://localhost:${SERVER_PORT}"
+sleep 5
+
+# Start cloudflare tunnel
+echo "🌐 Starting tunnel..."
+cloudflared tunnel --url http://localhost:18790 --metrics localhost:45678 &
+TUNNEL_PID=$!
+
 echo ""
-echo "Default login:"
-echo "  Username: admin"
-echo "  Password: admin123"
+echo "✅ Dashboard started!"
+echo "📱 Local: http://localhost:18790"
+echo "🌐 Check the tunnel URL above (wait 10 seconds for it to appear)"
 echo ""
 echo "Press Ctrl+C to stop"
-echo ""
 
-exec "$PYTHON" server.py
+# Wait for interrupt
+trap "kill $SERVER_PID $TUNNEL_PID 2>/dev/null; exit" INT
+wait
