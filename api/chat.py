@@ -11,6 +11,7 @@ import uuid
 
 from database import get_db, ChatMessage, UserSettings
 from services.auth import AuthService
+from services.chat_service import chat_service
 
 router = APIRouter()
 
@@ -146,29 +147,19 @@ async def chat_websocket(websocket: WebSocket, db: Session = Depends(get_db)):
 
 
 async def generate_openclaw_response(user_message: str, user_id: int, db: Session) -> str:
-    """Generate response from OpenClaw Agent."""
-    msg_lower = user_message.lower()
+    """Generate response from OpenClaw Agent using chat service."""
+    # Get conversation history for context
+    history = db.query(ChatMessage).filter(
+        ChatMessage.user_id == user_id
+    ).order_by(ChatMessage.created_at.desc()).limit(10).all()
     
-    if "gateway" in msg_lower or "状态" in msg_lower:
-        return "Gateway 状态可以通过 Dashboard 查看。目前系统运行正常。"
+    conversation_history = [
+        {"role": msg.role, "content": msg.content}
+        for msg in reversed(history)
+    ]
     
-    if "agent" in msg_lower or "任务" in msg_lower:
-        return "你可以在 Agent 控制面板查看和管理所有 Agent。"
-    
-    if "help" in msg_lower or "帮助" in msg_lower:
-        return """我可以帮你：
-- 查看系统状态
-- 管理 Agent 任务
-- 配置模型用量
-- 执行快捷操作
-
-请告诉我你需要什么帮助？"""
-    
-    if "hello" in msg_lower or "你好" in msg_lower:
-        return "你好！我是 OpenClaw 助手，很高兴为你服务！"
-    
-    # Default response
-    return f"我收到了你的消息：\"{user_message}\"\n\n目前我还在学习中，暂时只能回答一些预设问题。请使用 Dashboard 的功能来完成具体操作。"
+    # Use chat service to generate response
+    return await chat_service.generate_response(user_message, conversation_history)
 
 
 # REST API endpoints

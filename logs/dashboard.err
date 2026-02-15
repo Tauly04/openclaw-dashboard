@@ -1,18 +1,12 @@
-INFO:     Started server process [30958]
+INFO:     Started server process [31419]
 INFO:     Waiting for application startup.
 INFO:     Application startup complete.
 INFO:     Uvicorn running on http://0.0.0.0:18790 (Press CTRL+C to quit)
-INFO:     141.11.133.37:0 - "WebSocket /ws?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTc3MTc3Mjk3NSwiaWF0IjoxNzcxMTY4MTc1fQ.WKN-zFY-MUEUZJhi2b7UkQhCR9L0eoHMgm5eGGBH-Yc" [accepted]
+INFO:     141.11.133.37:0 - "WebSocket /ws?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTc3MTc3MzkxNCwiaWF0IjoxNzcxMTY5MTE0fQ.QUCgd_26fhDr7A7qHJuwbSlUPCtbSJmFPd2qx3W9ZXA" [accepted]
 INFO:     connection open
 INFO:     141.11.133.37:0 - "WebSocket /api/chat" [accepted]
 INFO:     connection open
 INFO:     141.11.133.37:0 - "WebSocket /api/chat" [accepted]
 INFO:     connection open
 INFO:     connection closed
-INFO:     connection closed
-INFO:     141.11.133.37:0 - "WebSocket /api/chat" [accepted]
-INFO:     connection open
-INFO:     connection closed
-INFO:     141.11.133.37:0 - "WebSocket /api/chat" [accepted]
-INFO:     connection open
 INFO:     connection closed

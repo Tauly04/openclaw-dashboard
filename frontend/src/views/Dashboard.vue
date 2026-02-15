@@ -87,6 +87,18 @@
         <span class="absolute left-full ml-3 px-2 py-1 bg-black/80 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">💬 点击对话</span>
       </button>
       
+      <!-- Feature Matrix Button -->
+      <button 
+        class="w-14 h-14 rounded-2xl glass flex items-center justify-center transition-all hover:scale-110 relative group"
+        :class="{ 'bg-purple-500/30 border-purple-400/50': currentView === 'features' }"
+        @click="goToFeatures"
+      >
+        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+        </svg>
+        <span class="absolute left-full ml-3 px-2 py-1 bg-black/80 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">功能矩阵</span>
+      </button>
+      
       <!-- Settings Button -->
       <button 
         class="w-14 h-14 rounded-2xl glass flex items-center justify-center transition-all hover:scale-110 group relative"
@@ -721,6 +733,10 @@ function confirmRestart() {
   if (confirm($t.value('confirmRestart'))) {
     dashboardStore.restartGateway()
   }
+}
+
+function goToFeatures() {
+  router.push('/features')
 }
 
 // Lifecycle
