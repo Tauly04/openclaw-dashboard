@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.openclaw.dashboard</string>
+    
+    <key>ProgramArguments</key>
+    <array>
+        <string>/Users/tauly/.openclaw/workspace/openclaw-dashboard/.venv/bin/python</string>
+        <string>/Users/tauly/.openclaw/workspace/openclaw-dashboard/server.py</string>
+    </array>
+    
+    <key>WorkingDirectory</key>
+    <string>/Users/tauly/.openclaw/workspace/openclaw-dashboard</string>
+    
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>/Users/tauly/.openclaw/workspace/openclaw-dashboard/.venv/bin:/usr/local/bin:/usr/bin:/bin</string>
+    </dict>
+    
+    <key>RunAtLoad</key>
+    <true/>
+    
+    <key>KeepAlive</key>
+    <true/>
+    
+    <key>StandardOutPath</key>
+    <string>/Users/tauly/.openclaw/workspace/openclaw-dashboard/logs/dashboard.out</string>
+    
+    <key>StandardErrorPath</key>
+    <string>/Users/tauly/.openclaw/workspace/openclaw-dashboard/logs/dashboard.err</string>
+</dict>
+</plist>
