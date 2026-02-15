@@ -1,12 +1,17 @@
-INFO:     Started server process [31419]
+INFO:     Started server process [31856]
 INFO:     Waiting for application startup.
 INFO:     Application startup complete.
 INFO:     Uvicorn running on http://0.0.0.0:18790 (Press CTRL+C to quit)
-INFO:     141.11.133.37:0 - "WebSocket /ws?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTc3MTc3MzkxNCwiaWF0IjoxNzcxMTY5MTE0fQ.QUCgd_26fhDr7A7qHJuwbSlUPCtbSJmFPd2qx3W9ZXA" [accepted]
+INFO:     2400:f880:8ee:3cb8::30:0 - "WebSocket /ws?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTc3MTc3NDQ0MCwiaWF0IjoxNzcxMTY5NjQwfQ.k_IViysiI_pbd_loPPENRWBM-S3kkOyliud8onZVwyY" [accepted]
 INFO:     connection open
-INFO:     141.11.133.37:0 - "WebSocket /api/chat" [accepted]
+INFO:     connection closed
+INFO:     2400:f880:8ee:3cb8::30:0 - "WebSocket /api/chat" [accepted]
 INFO:     connection open
-INFO:     141.11.133.37:0 - "WebSocket /api/chat" [accepted]
+INFO:     2400:f880:8ee:3cb8::30:0 - "WebSocket /api/chat" [accepted]
+INFO:     connection open
+INFO:     2400:f880:8ee:3cb8::30:0 - "WebSocket /ws?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTc3MTc3NDQ0MCwiaWF0IjoxNzcxMTY5NjQwfQ.k_IViysiI_pbd_loPPENRWBM-S3kkOyliud8onZVwyY" [accepted]
+INFO:     connection open
+INFO:     2400:f880:8ee:3cb8::30:0 - "WebSocket /ws?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsImV4cCI6MTc3MTc3NDQ0MCwiaWF0IjoxNzcxMTY5NjQwfQ.k_IViysiI_pbd_loPPENRWBM-S3kkOyliud8onZVwyY" [accepted]
 INFO:     connection open
 INFO:     connection closed
 INFO:     connection closed

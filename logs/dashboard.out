@@ -1,22 +1,27 @@
 OpenClaw Dashboard starting on 0.0.0.0:18790
 Database initialized
-INFO:     127.0.0.1:54958 - "GET / HTTP/1.1" 200 OK
-INFO:     127.0.0.1:54960 - "GET / HTTP/1.1" 200 OK
-INFO:     141.11.133.37:0 - "GET / HTTP/1.1" 200 OK
-INFO:     141.11.133.37:0 - "GET /assets/index-D3NNsVkr.js HTTP/1.1" 200 OK
-INFO:     141.11.133.37:0 - "GET /assets/index-gfhpvmky.css HTTP/1.1" 200 OK
-INFO:     141.11.133.37:0 - "GET /favicon.svg HTTP/1.1" 404 Not Found
-INFO:     141.11.133.37:0 - "GET /api/dashboard?light=1 HTTP/1.1" 401 Unauthorized
-INFO:     141.11.133.37:0 - "GET /assets/Login-C7-ZnA26.js HTTP/1.1" 200 OK
-INFO:     141.11.133.37:0 - "GET /api/dashboard HTTP/1.1" 401 Unauthorized
-INFO:     141.11.133.37:0 - "GET /api/status/?light=1 HTTP/1.1" 401 Unauthorized
-INFO:     141.11.133.37:0 - "GET /api/status/ HTTP/1.1" 401 Unauthorized
-INFO:     141.11.133.37:0 - "POST /api/auth/login HTTP/1.1" 200 OK
-INFO:     141.11.133.37:0 - "GET /assets/Dashboard-CWT4GKEf.js HTTP/1.1" 200 OK
-INFO:     141.11.133.37:0 - "GET /assets/_plugin-vue_export-helper-DlAUqK2U.js HTTP/1.1" 200 OK
-INFO:     141.11.133.37:0 - "GET /assets/Dashboard-Bmx_zLof.css HTTP/1.1" 200 OK
-INFO:     141.11.133.37:0 - "GET /api/dashboard?light=1 HTTP/1.1" 200 OK
-INFO:     141.11.133.37:0 - "GET /api/dashboard HTTP/1.1" 200 OK
-INFO:     141.11.133.37:0 - "GET /api/dashboard?light=1 HTTP/1.1" 200 OK
-INFO:     141.11.133.37:0 - "GET /api/dashboard?light=1 HTTP/1.1" 200 OK
-INFO:     141.11.133.37:0 - "GET /api/dashboard?light=1 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56480 - "GET / HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56482 - "GET / HTTP/1.1" 200 OK
+INFO:     2400:f880:8ee:3cb8::30:0 - "GET / HTTP/1.1" 200 OK
+INFO:     2400:f880:8ee:3cb8::30:0 - "GET /assets/index-B2zrfqWf.css HTTP/1.1" 200 OK
+INFO:     2400:f880:8ee:3cb8::30:0 - "GET /assets/index-CPsROumY.js HTTP/1.1" 200 OK
+INFO:     2400:f880:8ee:3cb8::30:0 - "GET /api/dashboard?light=1 HTTP/1.1" 401 Unauthorized
+INFO:     2400:f880:8ee:3cb8::30:0 - "GET /favicon.svg HTTP/1.1" 404 Not Found
+INFO:     2400:f880:8ee:3cb8::30:0 - "GET /assets/Login-BeV41heE.js HTTP/1.1" 200 OK
+INFO:     2400:f880:8ee:3cb8::30:0 - "GET /api/status/?light=1 HTTP/1.1" 401 Unauthorized
+INFO:     2400:f880:8ee:3cb8::30:0 - "GET /api/dashboard HTTP/1.1" 401 Unauthorized
+INFO:     2400:f880:8ee:3cb8::30:0 - "GET /api/status/ HTTP/1.1" 401 Unauthorized
+INFO:     2400:f880:8ee:3cb8::30:0 - "POST /api/auth/login HTTP/1.1" 200 OK
+INFO:     2400:f880:8ee:3cb8::30:0 - "GET /assets/Dashboard-P-PTkuCY.js HTTP/1.1" 200 OK
+INFO:     2400:f880:8ee:3cb8::30:0 - "GET /assets/Dashboard-C_CsrVns.css HTTP/1.1" 200 OK
+INFO:     2400:f880:8ee:3cb8::30:0 - "GET /assets/_plugin-vue_export-helper-DlAUqK2U.js HTTP/1.1" 200 OK
+INFO:     2400:f880:8ee:3cb8::30:0 - "GET /api/dashboard?light=1 HTTP/1.1" 200 OK
+INFO:     2400:f880:8ee:3cb8::30:0 - "GET /api/dashboard HTTP/1.1" 200 OK
+INFO:     2400:f880:8ee:3cb8::30:0 - "GET /assets/StatusBadge-BvsipsDA.js HTTP/1.1" 200 OK
+INFO:     2400:f880:8ee:3cb8::30:0 - "GET /assets/FeatureShowcase-YjdQrNso.css HTTP/1.1" 200 OK
+INFO:     2400:f880:8ee:3cb8::30:0 - "GET /assets/FeatureShowcase-BlJavwsD.js HTTP/1.1" 200 OK
+INFO:     2400:f880:8ee:3cb8::30:0 - "GET /api/dashboard HTTP/1.1" 200 OK
+INFO:     2400:f880:8ee:3cb8::30:0 - "GET /api/dashboard?light=1 HTTP/1.1" 200 OK
+INFO:     2400:f880:8ee:3cb8::30:0 - "GET /api/dashboard?light=1 HTTP/1.1" 200 OK
+INFO:     2400:f880:8ee:3cb8::30:0 - "GET /api/dashboard?light=1 HTTP/1.1" 200 OK
+INFO:     2400:f880:8ee:3cb8::30:0 - "GET /api/dashboard?light=1 HTTP/1.1" 200 OK
