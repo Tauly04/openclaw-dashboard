@@ -336,6 +336,58 @@
       </div>
     </div>
 
+    <!-- Chat Modal -->
+    <div v-if="currentView === 'chat'" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm" @click.self="currentView = 'home'">
+      <div class="glass rounded-3xl p-6 w-full max-w-2xl h-[70vh] flex flex-col">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-xl font-semibold text-white">Chat with OpenClaw</h3>
+          <button class="text-white/60 hover:text-white" @click="currentView = 'home'">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        
+        <!-- Chat Messages -->
+        <div class="flex-1 glass rounded-xl p-4 overflow-y-auto space-y-3" ref="chatContainer">
+          <div v-if="chatMessages.length === 0" class="text-center text-white/50 py-8">
+            Start a conversation with OpenClaw
+          </div>
+          <div v-for="(msg, index) in chatMessages" :key="index" 
+               :class="['flex', msg.role === 'user' ? 'justify-end' : 'justify-start']">
+            <div :class="['max-w-[80%] rounded-2xl px-4 py-2',
+                          msg.role === 'user' ? 'bg-blue-500/30 text-white' : 'bg-white/10 text-white/90']">
+              <p class="text-sm">{{ msg.content }}</p>
+              <span class="text-xs text-white/40 mt-1 block">{{ formatTime(msg.timestamp) }}</span>
+            </div>
+          </div>
+          <div v-if="isTyping" class="flex justify-start">
+            <div class="bg-white/10 rounded-2xl px-4 py-2 text-white/60">
+              <span class="animate-pulse">thinking...</span>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Chat Input -->
+        <div class="mt-4 flex gap-2">
+          <input 
+            v-model="chatInput" 
+            @keyup.enter="sendMessage"
+            type="text" 
+            placeholder="Type your message..."
+            class="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-white/40 focus:outline-none focus:border-white/30"
+          />
+          <button 
+            @click="sendMessage"
+            :disabled="!chatInput.trim() || isTyping"
+            class="px-6 py-3 bg-blue-500/20 hover:bg-blue-500/30 text-blue-200 rounded-xl transition-all disabled:opacity-50"
+          >
+            Send
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- Settings Modal -->
     <div v-if="showSettings" class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm" @click.self="showSettings = false">
       <div class="glass rounded-3xl p-6 w-full max-w-md">
@@ -390,7 +442,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted, provide } from 'vue'
+import { ref, computed, onMounted, onUnmounted, provide, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
 import { useDashboardStore } from '../stores/dashboard'
@@ -414,6 +466,94 @@ const showTerminalModal = ref(false)
 const bgImage = ref(localStorage.getItem('dashboard-bg-image') || '')
 const mousePos = ref({ x: 0.5, y: 0.5 })
 const isLightMode = ref(false)
+
+// Chat
+const chatMessages = ref([])
+const chatInput = ref('')
+const isTyping = ref(false)
+const chatSocket = ref(null)
+const chatContainer = ref(null)
+
+// Initialize chat WebSocket
+function initChatSocket() {
+  const token = localStorage.getItem('token')
+  if (!token) return
+  
+  const wsUrl = `${window.location.protocol === 'https:' ? 'wss' : 'ws'}://${window.location.host}/api/chat`
+  chatSocket.value = new WebSocket(wsUrl)
+  
+  chatSocket.value.onmessage = (event) => {
+    const data = JSON.parse(event.data)
+    
+    if (data.type === 'typing') {
+      isTyping.value = true
+    } else if (data.type === 'message') {
+      isTyping.value = false
+      chatMessages.value.push({
+        role: 'assistant',
+        content: data.content,
+        timestamp: data.timestamp
+      })
+      scrollToBottom()
+    } else if (data.type === 'system') {
+      chatMessages.value.push({
+        role: 'system',
+        content: data.content,
+        timestamp: data.timestamp
+      })
+    }
+  }
+  
+  chatSocket.value.onerror = (error) => {
+    console.error('Chat WebSocket error:', error)
+  }
+}
+
+function sendMessage() {
+  if (!chatInput.value.trim() || isTyping.value) return
+  
+  const message = {
+    type: 'message',
+    content: chatInput.value,
+    timestamp: new Date().toISOString()
+  }
+  
+  // Add to local messages
+  chatMessages.value.push({
+    role: 'user',
+    content: chatInput.value,
+    timestamp: message.timestamp
+  })
+  
+  // Send via WebSocket
+  if (chatSocket.value && chatSocket.value.readyState === WebSocket.OPEN) {
+    chatSocket.value.send(JSON.stringify(message))
+  }
+  
+  chatInput.value = ''
+  scrollToBottom()
+}
+
+function scrollToBottom() {
+  setTimeout(() => {
+    if (chatContainer.value) {
+      chatContainer.value.scrollTop = chatContainer.value.scrollHeight
+    }
+  }, 100)
+}
+
+function formatTime(timestamp) {
+  if (!timestamp) return ''
+  const date = new Date(timestamp)
+  return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+}
+
+// Watch for chat view
+watch(currentView, (newView) => {
+  if (newView === 'chat' && !chatSocket.value) {
+    initChatSocket()
+  }
+})
 
 // Background style
 const bgStyle = computed(() => {

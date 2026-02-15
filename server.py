@@ -20,6 +20,7 @@ from api.actions import router as actions_router
 from api.todos import router as todos_router
 from api.integrations import router as integrations_router
 from api.usage import router as usage_router
+from api.chat import router as chat_router
 from services.auth import AuthService
 from services.collector import StatusCollector
 
@@ -61,6 +62,7 @@ app.include_router(actions_router, prefix="/api")
 app.include_router(todos_router, prefix="/api")
 app.include_router(integrations_router, prefix="/api")
 app.include_router(usage_router, prefix="/api")
+app.include_router(chat_router, prefix="/api")
 
 # Frontend path - serve built Vue app
 FRONTEND_PATH = Path(__file__).parent / "frontend" / "dist"
